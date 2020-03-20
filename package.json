@@ -1,0 +1,23 @@
+{
+  "name": "make-mad-chaos",
+  "version": "1.0.0",
+  "description": "make mad currency bro",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ta maman",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "active-win": "^6.1.0",
+    "axios": "^0.19.2",
+    "iohook": "^0.6.5",
+    "read-last-lines": "^1.7.2",
+    "robotjs": "^0.6.0",
+    "rxjs": "^6.5.4"
+  },
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^6.8.0"
+  }
+}
