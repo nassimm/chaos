@@ -1,15 +1,14 @@
 'use strict';
-const {  switchMapTo, filter, map, pluck, startWith, withLatestFrom, tap, distinctUntilChanged} = require('rxjs/operators');
-const { writeFile } = require('fs');
 const robot = require('robotjs');
+const { switchMapTo, filter, map, pluck, startWith, withLatestFrom, tap, distinctUntilChanged } = require('rxjs/operators');
+const { writeFile } = require('fs');
 
 const { usedFilter, RELOAD_LOOT_FILTER_KEY, FILL_INVENTORY_KEY } = require('./helpers/constants');
 const { stashTabToItemCount } = require('./helpers/stash-tab-to-item-count');
 const { itemCountToLootFilter } = require('./helpers/item-count-to-loot-filter');
 const { clickStashPosition, clickPosition } = require('./helpers/click-stash-position');
-const { areRecipeAvailable } = require('./helpers/are-recipe-available');
-const { keyPresses$ } = require('./helpers/key-presses');
-const { lootFilterFile$, logChanges$, lastLineOfLog$, stash$ } = require('./helpers/async-sources');
+const { recipesAreAvailable } = require('./helpers/are-recipe-available');
+const { lootFilterFile$, logChanges$, lastLineOfLog$, stash$, keyPresses$ } = require('./helpers/async-sources');
 
 let availableRecipeItems;
 
@@ -24,11 +23,11 @@ logChanges$
     map(stashTabToItemCount),
     tap(count => {
       availableRecipeItems = count;
-      if (areRecipeAvailable(availableRecipeItems)) console.log('Recipes are available');
+      if (recipesAreAvailable(availableRecipeItems)) console.log('Recipes are available');
     }),
     map(itemCountToLootFilter),
     withLatestFrom(lootFilterFile$),
-    map(([adds, filter]) => adds + filter),
+    map(([addedRules, originalFilter]) => addedRules + originalFilter),
     distinctUntilChanged()
   )
   .subscribe(filterData => {
@@ -38,21 +37,17 @@ logChanges$
 
 // Handling filling inventory
 keyPresses$.pipe(filter(press => press.keycode === FILL_INVENTORY_KEY)).subscribe(() => {
-  const { ringsInStash, amuletsInStash } = availableRecipeItems;
-  if (areRecipeAvailable(availableRecipeItems)) {
-    const commonItemsToClick = availableRecipeItems.itemCount.reduce(
-      (acc, itemType) => [...acc, itemType.items.shift()],
-      []
-    );
+  const { ringsInStash, amuletsInStash, commonItemsInStash } = availableRecipeItems;
+  if (recipesAreAvailable(availableRecipeItems)) {
     const itemsToClick = [
-      ...commonItemsToClick,
+      ...commonItemsInStash.reduce((acc, itemType) => [...acc, itemType.items.shift()], []),
       ringsInStash.items.shift(),
       ringsInStash.items.shift(),
       amuletsInStash.items.shift()
     ];
     itemsToClick.forEach(item => clickStashPosition(item.x, item.y));
   } else {
-    const missingCommonItems = availableRecipeItems.itemCount
+    const missingCommonItems = commonItemsInStash
       .filter(itemType => itemType.items.length === 0)
       .map(type => type.itemClass)
       .join(', ');
