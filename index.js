@@ -31,8 +31,13 @@ logChanges$
     distinctUntilChanged()
   )
   .subscribe(filterData => {
-    console.log('New lootfilter available, press your reload key');
-    writeFile(usedFilter, filterData, err => console.log('ERR', err));
+    writeFile(usedFilter, filterData, err => {
+      if (err) {
+        console.log('Error writing to file: ' + err);
+      } else {
+        console.log('New lootfilter available, press your reload key');
+      }
+    });
   });
 
 // Handling filling inventory

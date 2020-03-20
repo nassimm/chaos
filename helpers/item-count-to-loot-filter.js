@@ -9,7 +9,7 @@ const itemCountToLootFilter = ({ringsInStash,amuletsInStash, commonItemsInStash 
     filterAdds = filterAdds + showItemClass(amuletsInStash.itemClass)
   }
   if (ringsInStash.count >= 10 && amuletsInStash.count >= 5) {    
-    filterAdds = filterAdds + commonItemsInStash.filter(item => item.count < 10).map(item => showItemClass(item.itemClass)).join('\r\n')
+    filterAdds = filterAdds + commonItemsInStash.filter(item => item.count < 5).map(item => showItemClass(item.itemClass)).join('\r\n')
   }
   return filterAdds;
 };
