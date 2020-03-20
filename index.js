@@ -24,7 +24,7 @@ logChanges$
     map(stashTabToItemCount),
     tap(count => {
       availableRecipeItems = count;
-      console.log('Recipes are available');
+      if (areRecipeAvailable(availableRecipeItems)) console.log('Recipes are available');
     }),
     map(itemCountToLootFilter),
     withLatestFrom(lootFilterFile$),
