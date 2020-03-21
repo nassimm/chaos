@@ -45,10 +45,10 @@ keyPresses$.pipe(filter(press => press.keycode === FILL_INVENTORY_KEY)).subscrib
   const { ringsInStash, amuletsInStash, commonItemsInStash } = availableRecipeItems;
   if (recipesAreAvailable(availableRecipeItems)) {
     const itemsToClick = [
-      ...commonItemsInStash.reduce((acc, itemType) => [...acc, itemType.items.shift()], []),
-      ringsInStash.items.shift(),
-      ringsInStash.items.shift(),
-      amuletsInStash.items.shift()
+      ...commonItemsInStash.reduce((acc, itemType) => [...acc, itemType.items.pop()], []),
+      ringsInStash.items.pop(),
+      ringsInStash.items.pop(),
+      amuletsInStash.items.pop()
     ];
     itemsToClick.forEach(item => clickStashPosition(item.x, item.y));
   } else {
