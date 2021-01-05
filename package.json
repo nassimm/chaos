@@ -10,7 +10,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "active-win": "^6.1.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "iohook": "^0.6.5",
     "read-last-lines": "^1.7.2",
     "robotjs": "^0.6.0",
